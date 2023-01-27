@@ -1,7 +1,10 @@
-let ballX;
-let ballY;
 let ballWidth = 15;
 let ballHeight = 15;
+let ballDirectX = -1;
+let ballDirectY = 1;
+let ballX;
+let ballY;
+let ballSpeed = 2;
 
 const canvasWidth = 1000;
 const canvasHeight = 600;
@@ -11,12 +14,14 @@ const canvasHeight = 600;
 let p1X = 25;
 let p1Y = 300;
 let speed = 5;
+let pointP1 = 0;
 //player two
 let p2X = canvasWidth - 25;
 let p2Y = canvasHeight / 2;
+let pointP2 = 0;
 //paddle dimensions
 let paddleWidth = canvasWidth /50;
-let paddleHeight = canvasHeight/3;
+let paddleHeight = canvasHeight /3;
 
 function setup() {
   var cnv = createCanvas(canvasWidth, canvasHeight);
@@ -51,13 +56,55 @@ function draw() {
   noStroke();
 
   //draw the ball
-  rect(ballX, ballY, ballWidth, ballHeight);
+  ellipse(ballX, ballY, ballWidth, ballHeight);
 
   //draw p1
   rect(p1X, p1Y, paddleWidth, paddleHeight);
 
   //draw p2 will become the computer
   rect(p2X, p2Y, paddleWidth, paddleHeight);
+
+
+  //Score
+  textSize(30);
+  text(pointP1, (canvasWidth/2) - 30 , 30);
+  text(pointP2, (canvasWidth/2) + 15 , 30);
+
+  //ball movement
+  ballX += ballDirectX*ballSpeed;
+  ballY += ballDirectY*ballSpeed;
+
+  //ball collision with bottom wall
+  if(ballY >= canvasHeight){
+    ballDirectY = ballDirectY*(-1)
+  }
+  //ball collision with top wall
+  if(ballY <= 0){
+    ballDirectY = ballDirectY*(-1)
+  }
+
+  //Player one scores
+  if(ballX <= 0)
+  {
+    pointP1 += 1;
+    ballX = width/2;
+    ballY = height/2;
+  }
+  //Player two scores
+  if(ballX >= canvasWidth)
+  {
+    pointP2 += 1;
+    ballX = width/2;
+    ballY = height/2;
+  }
+
+  //Paddle collisions
+  if(ballX >= (p1X - (paddleWidth/2)) && ballX <= (p1X + (paddleWidth/2)) && ballY >= (p1Y - (paddleHeight/2)) && ballY <= (p1Y + (paddleHeight/2)))
+  {
+    ballDirectX = ballDirectX*(-1)
+  }
+
+
 }
 
 
