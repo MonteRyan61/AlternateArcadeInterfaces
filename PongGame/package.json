@@ -1,0 +1,40 @@
+{
+  "name": "nnarduino",
+  "private": true,
+  "version": "0.0.0",
+  "main": "main.js",
+  "scripts": {
+    "dist": "rm -r -f dist/ && vite build",
+    "serve": "concurrently -k \"vite\" \"npm run electron:dev\"",
+    "build": "rm -r -f dist/ && rm -r -f app-mac/ && vite build && npm run electron:build-mac",
+    "build-win": "rm -r -f app-win/ vite build && npm run electron:build-win",
+    "electron:dev": "cross-env IS_DEV=true electron .",
+    "electron:build-mac": "npx electron-packager . nnarduino --out=app-mac --overwrite --mac --icon=public/app.icns --ignore=\"(app-)\"",
+    "electron:build-win": "npx electron-packager . nnarduino --out=app-win --overwrite --asar --platform=win32 --arch=ia32 --icon=public/app.ico --ignore=\"(app-)\" --prune=true --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName='App'"
+  },
+  "dependencies": {
+    "nnarduino": "^1.0.7",
+    "p5": "^1.4.1",
+    "serialport": "^10.4.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^0.1.2",
+    "node-sass": "^7.0.1",
+    "concurrently": "^7.4.0",
+    "cross-env": "^7.0.3",
+    "electron-packager": "^17.0.0",
+    "electron-rebuild": "^3.2.9",
+    "rollup-plugin-modify": "^3.0.0",
+    "sass": "^1.49.11",
+    "sass-loader": "^13.0.2",
+    "@vitejs/plugin-vue": "^3.1.0",
+    "@web/rollup-plugin-copy": "^0.3.0",
+    "electron": "^21.0.0",
+    "vite": "^3.1.3",
+    "vue": "^3.2.25"
+  },
+  "files": [
+    "src/*",
+    "!node_modules/**"
+  ]
+}
