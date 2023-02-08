@@ -10,6 +10,9 @@ let ballX;
 let ballY;
 let ballSpeed = 5;
 
+let hitPaddleSound;
+let boostSound;
+
 const canvasWidth = 700;
 const canvasHeight = 900;
 
@@ -22,11 +25,11 @@ let powerShot = false;
 let p1X = canvasWidth / 2;
 let p1Y = canvasHeight - 20 ;
 let p1Speed = 20;
-let p2Speed = 10;
 let pointP1 = 0;
 //player two
 let p2X = canvasWidth / 2;
 let p2Y = 20;
+let p2Speed = 6;
 let pointP2 = 0;
 //paddle dimensions
 let paddleHeight = canvasHeight /50;
@@ -45,6 +48,8 @@ function preload() {
 }
 
 function setup () {
+	hitPaddleSound = new Audio("../sound/paddleHit.wav");
+	boostSound = new Audio("../sound/boost.wav");
 	var cnv = createCanvas(canvasWidth, canvasHeight);
 	//center the canvas in the browser window
 	var x = (windowWidth - width) / 2;
@@ -123,6 +128,7 @@ function draw () {
   
   function mainGame() {
 	//calling functions to make smooth movement of paddle
+	hitPaddleSound.loop = false;
 	keyTyped();
   
 	moveUser();
@@ -141,7 +147,8 @@ function draw () {
 	noStroke();
   
 	//draw the ball experimending with the ball being fire it doesn't work as well though.
-	ellipse(ballX, ballY, ballWidth, ballHeight);
+	// NOT NEEDED WITH THE TRAIL
+	// ellipse(ballX, ballY, ballWidth, ballHeight);
 	// image(fire,ballX,ballY,ballWidth + 10,ballHeight + 10);
   
 	//draw p1
@@ -191,6 +198,7 @@ function draw () {
 	//Paddle collisions if in the area of the paddle then it will shoot the ball the other way aka change reverse the x direction
 	if(ballX >= (p1X - (paddleWidth/2)) && ballX <= (p1X + (paddleWidth/2)) && ballY >= (p1Y - (paddleHeight/2)) && ballY <= (p1Y + (paddleHeight/2)))
 	{
+		hitPaddleSound.play();
 	  ballDirectY = ballDirectY*(-1)
 	  ballSpeed += .5;
 	}
@@ -198,15 +206,17 @@ function draw () {
 	//the functionality of the computer.
 	if(ballX >= (p2X - (paddleWidth/2)) && ballX <= (p2X + (paddleWidth/2)) && ballY >= (p2Y - (paddleHeight/2)) && ballY <= (p2Y + (paddleHeight/2)))
 	{
+		hitPaddleSound.play();
 	  ballDirectY = ballDirectY*(-1)
 	  ballSpeed += .5;
 	}
 	//if the ball is above the paddle then we want to move up and vise versa
-	if(ballX >= p2X && (p2X + (paddleWidth/2)) <= canvasWidth )
+	//TO hard tho lets make them only move when the ball is getting close to their half
+	if(ballX >= p2X && (p2X + (paddleWidth/2)) <= canvasWidth && (ballY <= canvasHeight/2))
 	{
 	  p2X = p2X + p2Speed;
 	}
-	if(ballX <= p2X && (p2X - (paddleWidth/2)) >= 0)
+	if(ballX <= p2X && (p2X - (paddleWidth/2)) >= 0 && (ballY <= canvasHeight/2))
 	{
 	  p2X = p2X - p2Speed;
 	}
@@ -230,27 +240,41 @@ function draw () {
 	}
 	if(powerShot && boost != -1)
 	{
-		if(ballY >= (canvasHeight/2))
+		for (let i = 0; i < 5; i++) {
+			let p = new Particle(ballX, ballY, true);
+			particles.push(p);
+		  }
+		  for (let i = particles.length - 1; i >= 0; i--) {
+			particles[i].update();
+			particles[i].show();
+			if (particles[i].finished()) {
+			  particles.splice(i, 1);
+			}
+		  }
+		if(ballY >= 40 && ballDirectY >= 0)
 		{
 			ballSpeed = prevBallSpeed;
 		}
 		fill("white");
 		textSize(20);
 		text("POWER SHOT" , (canvasWidth/2), 90);
+		text(boost + " REMAINING!" , (canvasWidth/2), 150);
+	}
+	else if(!powerShot)
+	{
+		for (let i = 0; i < 5; i++) {
+			let p = new Particle(ballX, ballY, false);
+			particles.push(p);
+		  }
+		  for (let i = particles.length - 1; i >= 0; i--) {
+			particles[i].update();
+			particles[i].show();
+			if (particles[i].finished()) {
+			  particles.splice(i, 1);
+			}
+		  }
 	}
 
-
-	for (let i = 0; i < 5; i++) {
-		let p = new Particle(ballX, ballY);
-		particles.push(p);
-	  }
-	  for (let i = particles.length - 1; i >= 0; i--) {
-		particles[i].update();
-		particles[i].show();
-		if (particles[i].finished()) {
-		  particles.splice(i, 1);
-		}
-	  }
 }
 
 // function that player one will move the user based on where the potentiometer is at.
@@ -271,7 +295,7 @@ function keyTyped(){
 	{
 	  page = 1;
 	}
-  }
+}
 
 //This will be used to increase the speed of a shot you get a few per game
 function buttonPressed() {
@@ -289,6 +313,13 @@ function buttonPressed() {
 		prevBallSpeed = ballSpeed;
 		ballSpeed = 15;
 		boost = boost - 1;
+		boostSound.play();
+	}
+	else if(boost == 0)
+	{
+		fill("white");
+		textSize(20);
+		text("OUT OF POWER SHOTS!" , (canvasWidth/2), 90);
 	}
 }
 
@@ -304,13 +335,14 @@ function powerShotEnd(){
 
 //Fire Effect https://editor.p5js.org/Allayna/sketches/o239lOcns
 class Particle {
-	constructor(x, y) {
+	constructor(x, y, grey) {
 	  this.x = x;
 	  this.y = y;
 	  this.vx = random(-1, 1);
 	  this.vy = random(-5, -1);
 	  this.alpha = 200;
 	  this.d = 16;
+	  this.grey = grey;
 	}
   
 	finished() {
@@ -326,7 +358,13 @@ class Particle {
   
 	show() {
 	  noStroke();
-	  fill(random(200,230), random(50, 150), 10, this.alpha);
+	  if(this.grey)
+	  {
+		fill(random(215,230), random(215,230), random(215,230), this.alpha);
+	  }
+	  else{
+		fill(random(200,230), random(50, 150), 10, this.alpha);
+	  }
 	  ellipse(this.x, this.y, this.d);
 	}
 }
