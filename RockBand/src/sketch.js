@@ -22,6 +22,11 @@ let chartP2 = [
 let playerOnex = 405;
 let playerTwoX = 780;
 
+
+let playerOneAdvantage = false;
+let playerOneHiddenY = 0;
+let playerTwoHiddenY = 0;
+
 let noteHit = false;
 let speed = 30;
 
@@ -180,6 +185,8 @@ function mainGame(){
         singularNote.y += 8;
       }
 
+  
+
   //displays and fades hitboxes for player One
     for (let i = 0; i < hitsP1.length; i++) {
       hitsP1[i].display();
@@ -228,8 +235,32 @@ function mainGame(){
         totNoteP2++;
     }
   }
+
+  lampAdvantage();
 }
 
+function lampAdvantage(){
+  //Lamp advantage
+  fill(0, 0, 0);
+  if(playerOneAdvantage)
+  {
+    rect(playerTwoX, -10, 150, playerTwoHiddenY, 10);
+    playerTwoHiddenY += 1;
+    if(playerOneHiddenY > 0)
+    {
+      playerOneHiddenY -= 2;
+    }
+  }
+  else
+  {
+    rect(playerOnex, -10, 150, playerOneHiddenY, 10);
+    playerOneHiddenY += 1;
+    if(playerTwoHiddenY > 0)
+    {
+      playerTwoHiddenY -= 2;
+    }
+  }
+}
 
 function randomIntFromInterval(min, max) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min)
@@ -273,12 +304,16 @@ function setupPlayField(){
     //Seperator
     rect(width/2, -10, 1, screenHeight + 50, 10);
 
+
     fill(0, 50);
     //Player one's side column
     rect(playerOnex, -10, 150, screenHeight + 50, 10);
 
+
     //Player two's side column
     rect(playerTwoX, -10, 150, screenHeight + 50, 10);
+
+
 
     //Player ones's Hit Box
     fill(0, 255, 50, 200);
@@ -412,13 +447,13 @@ function checkPointValueP2()
 
 //checks which controller is presses
 function keyTyped() {
-  if (key === "a") {
+  if (key === "a" && showing == 2) {
     checkPointValueP1();
   }
-  if (key == "l") {
+  if (key == "l"  && showing == 2) {
     checkPointValueP2();
   }
-  if (key == "g") {
+  if (key == "g"  && showing == 2) {
     //Add in lamp feature here.
   }
 }
