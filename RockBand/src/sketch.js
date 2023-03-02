@@ -19,21 +19,25 @@ let chartP2 = [
   0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1,
 ]
 
-let playerOnex = 250;
-let playerTwoX = 600;
+let playerOnex = 405;
+let playerTwoX = 780;
 
 let noteHit = false;
 let speed = 30;
-let noteTotal = 0;
+
 let size = 800;
 
-let scoreP1 = 0;
+let scoreP1 = 1;
 let hitStreakP1 = 0;
+let highestStreakP1 = 0;
+let totNoteP1 = 0;
 
 let scoreP2 = 0;
 let hitStreakP2 = 0;
+let highestStreakP2 = 0;
+let totNoteP2 = 0;
 
-let screenWidth = 1000;
+let screenWidth = 1350;
 let screenHeight = 900;
 
 let timerP1 = 0;
@@ -56,17 +60,29 @@ let playerOneButton;
 let playerTwoButton;
 let lampButton;
 
+let mainbg;
+let playbg;
+let endbg;
+
+function preload(){
+  mainbg = loadImage('assets/mainBack.png');
+  playbg = loadImage('assets/playBack.png');
+  endbg = loadImage('assets/gameover.png');
+}//close preload
+
 function setup() {
   song = loadSound('assets/dmvdisco.wav');
+
+
   createCanvas(screenWidth, screenHeight);
+  
+  // playerOneButton = connectSensor( SENSOR_BUTTON, 3);
+  // playerTwoButton = connectSensor( SENSOR_BUTTON, 5);
+  // lampButton = connectSensor( SENSOR_BUTTON, 8);
 
-  playerOneButton = connectSensor( SENSOR_BUTTON, 3);
-  playerTwoButton = connectSensor( SENSOR_BUTTON, 5);
-  lampButton = connectSensor( SENSOR_BUTTON, 8);
-
-  playerOneButton.pressed(checkPointValueP1);
-  playerTwoButton.pressed(checkPointValueP2);
-  lampButton.pressed(lampButtonPressed);
+  // playerOneButton.pressed(checkPointValueP1);
+  // playerTwoButton.pressed(checkPointValueP2);
+  // lampButton.pressed(lampButtonPressed);
 }
 
 
@@ -74,112 +90,142 @@ function draw() {
   counter++;
   if(showing == 0)
   {
-    background(300);
+    background(200);
+    imageMode(CENTER);
+    image(mainbg, width/2, height/2, width, height)
 
+    //Draw the menu text
+    strokeWeight(4);
+    stroke(255, 255, 255);
+    textSize(35);
+    fill(255, 255, 255);
+    text('JAM OUT', 825, 180);
+    text('AT THE DMV',800, 215)
+    textSize(15);
+    strokeWeight(0);
+    text('PULL THE LAMP CORD TO JAM', 790, 275);
   }
-  else if(showing = 1)
+  else if(showing == 1)
   {
     background(200);
-
-    setupPlayField();
-
-    // let test = randomIntFromInterval(3,5);
-
-    if ((counter % 15) == 0) {
-      if(chartP1[chartIndex] == 1) {
-        //New Note for Player 1
-        notesP1.push(new Note(1));
-        noteCount += 1;
-      }
-      if(chartP2[chartIndex] == 1) {
-        //New Note for Player 2
-        notesP2.push(new Note(2));
-        noteCount += 1;
-      }
-      chartIndex++;
-    }
-
-    // if ((counter % 30) == 0) {
-    //   //New Note for Player 2
-    //   notesP2.push(new Note(2));
-    //   noteCount += 1;
-    // }
-    
-
-
-    //display the notes for Player One
-    for (let i = 0; i < notesP1.length; i++) {
-      const singularNote = notesP1[i];
-      if(singularNote.n == 1)
-      {
-        //Player 1 Note Color
-        fill(0, 255, 50, 200);
-      }
-      rect(singularNote.x, singularNote.y, 150, 100, 20);
-      singularNote.y += 8;
-    }
-
-    //display the notes for Player Two
-    for (let i = 0; i < notesP2.length; i++) {
-          const singularNote = notesP2[i];
-          if(singularNote.n == 2)
-          {
-            //Player 2 Note Color
-            fill(200, 0, 50, 200);
-          }
-          rect(singularNote.x, singularNote.y, 150, 100, 20);
-          singularNote.y += 8;
-        }
-      }
-
-    //displays and fades hitboxes for player One
-      for (let i = 0; i < hitsP1.length; i++) {
-        hitsP1[i].display();
-        hitsP1[i].fade();
-    }
-
-    //Get rid of P1 hit after it fades away
-    for (let i = 0; i < hitsP1.length; i++) {
-        if (hitsP1[i].opacity < 0) {
-            hitsP1.splice(i, 1);
-        }
-    }
-
-    //displays and fades hitboxes for player Two
-    for (let i = 0; i < hitsP2.length; i++) {
-      hitsP2[i].display();
-      hitsP2[i].fade();
-      }
+    imageMode(CENTER);
+    image(playbg, width/2.1, height/2, width, height)
   
-      //Get rid of P2 hit after it fades away
-      for (let i = 0; i < hitsP2.length; i++) {
-          if (hitsP2[i].opacity < 0) {
-              hitsP2.splice(i, 1);
-          }
+    displayScores();
+  
+    setupPlayField();
+    mainGame();
+    if(scoreP1 < -500 || scoreP2 < -500)
+    {
+      showing = 2;
+    }
+  }
+  else if(showing == 2)
+  {
+    background(200);
+    imageMode(CENTER);
+    image(endbg, width/2.1, height/2, width, height)
+    endGame();
+  }
+
+
+}
+
+function mainGame(){
+  // let test = randomIntFromInterval(3,5);
+
+  if ((counter % 15) == 0) {
+    if(chartP1[chartIndex] == 1) {
+      //New Note for Player 1
+      notesP1.push(new Note(1));
+      noteCount += 1;
+    }
+    if(chartP2[chartIndex] == 1) {
+      //New Note for Player 2
+      notesP2.push(new Note(2));
+      noteCount += 1;
+    }
+    chartIndex++;
+  }
+
+  // if ((counter % 30) == 0) {
+  //   //New Note for Player 2
+  //   notesP2.push(new Note(2));
+  //   noteCount += 1;
+  // }
+  
+
+
+  //display the notes for Player One
+  for (let i = 0; i < notesP1.length; i++) {
+    const singularNote = notesP1[i];
+    if(singularNote.n == 1)
+    {
+      //Player 1 Note Color
+      fill(0, 255, 50, 200);
+    }
+    rect(singularNote.x, singularNote.y, 150, 100, 20);
+    singularNote.y += 8;
+  }
+
+  //display the notes for Player Two
+  for (let i = 0; i < notesP2.length; i++) {
+        const singularNote = notesP2[i];
+        if(singularNote.n == 2)
+        {
+          //Player 2 Note Color
+          fill(200, 0, 50, 200);
+        }
+        rect(singularNote.x, singularNote.y, 150, 100, 20);
+        singularNote.y += 8;
       }
+
+  //displays and fades hitboxes for player One
+    for (let i = 0; i < hitsP1.length; i++) {
+      hitsP1[i].display();
+      hitsP1[i].fade();
+  }
+
+  //Get rid of P1 hit after it fades away
+  for (let i = 0; i < hitsP1.length; i++) {
+      if (hitsP1[i].opacity < 0) {
+          hitsP1.splice(i, 1);
+      }
+  }
+
+  //displays and fades hitboxes for player Two
+  for (let i = 0; i < hitsP2.length; i++) {
+    hitsP2[i].display();
+    hitsP2[i].fade();
+    }
+
+    //Get rid of P2 hit after it fades away
+    for (let i = 0; i < hitsP2.length; i++) {
+        if (hitsP2[i].opacity < 0) {
+            hitsP2.splice(i, 1);
+        }
+    }
 
 
   //clear the notes shortly after the pass the hitbox and prevent array from getting to big and take away points
-    for (let i = 0; i < notesP1.length; i++){
-      if (notesP1[i].y > screenHeight - 30){
-          // score -= 200;
-          // streak = 0;
-          // hit = true;
-          // ht = 0;
-          notesP1.splice(i, 1); //remove element from the array
-          // tot++;
-      }
+  for (let i = 0; i < notesP1.length; i++){
+    if (notesP1[i].y > screenHeight - 30){
+        scoreP1 -= 200;
+        checkHitStreakP1();
+        hitStreakP1 = 0;
+        notesP1.splice(i, 1); //remove element from the array
+        totNoteP1++;
+    }
   }
 
-  //clear for P2
+      //clear for P2
   for (let i = 0; i < notesP2.length; i++) {
     if (notesP2[i].y > screenHeight - 30) {
-        // score -= 200;
-        // streak = 0;
-        // hit = true;
-        // ht = 0;
+        scoreP2 -= 200;
+        checkHitStreakP2();
+        hitStreakP2 = 0;
         notesP2.splice(i, 1); //remove element from the array
-        // tot++;
+        totNoteP2++;
     }
   }
 }
@@ -189,6 +235,32 @@ function randomIntFromInterval(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
+function displayScores(){
+  stroke(0);
+  strokeWeight(2);
+  stroke(0, 0, 0);
+  textSize(35);
+  
+
+  //Player One Score Display
+  fill(0, 255, 50, 200);
+  text('SCORE:', 225, 185);
+  text(scoreP1, 275, 225)
+  //Player Two Score Display
+  fill(200, 0, 50, 200);
+  text('SCORE:', 990, 185);
+  text(scoreP2, 1040, 225)
+  
+  //Plater One Note Streak Display
+  textSize(15);
+  fill(0, 255, 50, 200);
+  text('NOTE STREAK:', 180, 285);
+  text(hitStreakP1, 320, 285);
+  //Player Two Note Streak Display
+  fill(200, 0, 50, 200);
+  text('NOTE STREAK:', 950, 285);
+  text(hitStreakP2, 1100, 285);
+}
 
 
 
@@ -196,8 +268,12 @@ function setupPlayField(){
     //Set up Play Field
     stroke(0);
     strokeWeight(10);
-    fill(0, 50);
+    stroke(255, 255, 255);
 
+    //Seperator
+    rect(width/2, -10, 1, screenHeight + 50, 10);
+
+    fill(0, 50);
     //Player one's side column
     rect(playerOnex, -10, 150, screenHeight + 50, 10);
 
@@ -253,7 +329,9 @@ function checkPointValueP1()
         }
         //Miss //Could add an else here to end the game if misses becomes too many
         else{
-          streak = 0;
+          checkHitStreakP1();
+          hitStreakP1 = 0;
+          scoreP1 -= 100;
           hitsP1.push(new Hit(1, "Miss", 1));
           break;
         }
@@ -261,6 +339,21 @@ function checkPointValueP1()
 }
 }
 
+function checkHitStreakP1()
+{
+  if(hitStreakP1 > highestStreakP1)
+  {
+    highestStreakP1 = hitStreakP1;
+  }
+}
+
+function checkHitStreakP2()
+{
+  if(hitStreakP2 > highestStreakP2)
+  {
+    highestStreakP2 = hitStreakP2;
+  }
+}
 //can also add a tracker of how many different hits
 function checkPointValueP2()
 {
@@ -306,7 +399,9 @@ function checkPointValueP2()
         }
         //Miss //Could add an else here to end the game if misses becomes too many
         else{
-          streak = 0;
+          checkHitStreakP1();
+          hitStreakP2 = 0;
+          scoreP2 -= 100;
           hitsP2.push(new Hit(2, "Miss", 1));
           break;
         }
@@ -413,4 +508,51 @@ function mousePressed() {
 
 function lampButtonPressed(){
   console.log("Lamp Pressed");
+}
+
+function endGame(){
+
+  displayEndScored();
+  stroke(0);
+  strokeWeight(2);
+  stroke(0, 0, 0);
+  textSize(45);
+  //player One Wins
+  if(scoreP1 > scoreP2)
+  {
+    fill(0, 255, 50, 200);
+    text('BARBIE CAM', width/2.6, height/1.69);
+  }
+  else // Payer Two Wins
+  {
+    fill(200, 0, 50, 200);
+    text('HOLE PUNCH', width/2.6, height/1.69);
+  }
+}
+
+function displayEndScored()
+{
+  stroke(0);
+  strokeWeight(2);
+  stroke(0, 0, 0);
+  textSize(45);
+
+  //Player One Score Display
+  fill(0, 255, 50, 200);
+  text('SCORE:', 215, 285);
+  text(scoreP1, 275, 350)
+  //Player Two Score Display
+  fill(200, 0, 50, 200);
+  text('SCORE:', 950, 285);
+  text(scoreP2, 1000, 350)
+  
+  //Plater One Note Streak Display
+  textSize(15);
+  fill(0, 255, 50, 200);
+  text('HIGHEST STREAK:', 200, 485);
+  text(highestStreakP1, 340, 485);
+  //Player Two Note Streak Display
+  fill(200, 0, 50, 200);
+  text('HIGHEST STREAK:', 950, 485);
+  text(highestStreakP2, 1100, 485);
 }
