@@ -5,19 +5,41 @@ let notesP2 = [];
 var hitsP1 = [];
 var hitsP2 = [];
 
+
+//NOTE TOTAL P1 132 P2 133
+let totalNotesP1 = 132;
+let totalNotesP2 = 133;
+
 let chartIndex = 0;
 let chartP1 = [
-  1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,
-  1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,
-  1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,
-  1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0
+  1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0,
+  1, 1, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 1, 0, 1,
+  1, 1, 0, 0, 1, 1, 0, 0, /**/ 1, 1, 0, 0, 1, 1, 0, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 1, 0, 1,
+  1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 1, 0, 0,
+  1, 0, 0, 1, 1, 0, 0, 1, /**/ 1, 0, 0, 1, 1, 0, 0, 1, /**/ 0, 1, 1, 0, 0, 1, 1, 0, /**/ 0, 1, 1, 0, 0, 1, 1, 1,
+  1, 0, 0, 0, 1, 0, 0, 0, /**/ 0, 1, 1, 1, 0, 1, 1, 1, /**/ 1, 0, 1, 0, 1, 0, 1, 0, /**/ 0, 1, 0, 1, 1, 1, 1, 1,
+  1, 1, 0, 0, 1, 1, 0, 0, /**/ 1, 1, 0, 0, 1, 1, 0, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 1, 0, 1,
+  1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 0, 1, 0, 0, 0, 1, 0, 0, /**/ 0, 1, 0, 0, 0, 1, 0, 0,
+  0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 1, 0, 1,
+  1, 1, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0,
+  0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 1, 0, 1,
+  1, 1, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0,
 ];
 let chartP2 = [
-  0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0,
-  0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1,
-  0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0,
-  0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1,
-]
+  0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 1, 0, 1,
+  1, 1, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0,
+  0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 1, 1, 0, 0, 0, 0, 1, 0, /**/ 1, 1, 0, 0, 1, 1, 0, 0,
+  0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 1, 0, 1,
+  0, 1, 1, 0, 0, 1, 1, 0, /**/ 0, 1, 1, 0, 0, 1, 1, 0, /**/ 1, 0, 0, 1, 1, 0, 0, 1, /**/ 1, 0, 0, 1, 1, 0, 1, 1, 
+  0, 1, 1, 1, 0, 1, 1, 1, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 0, 1, 0, 1, 0, 1, 0, 1, /**/ 1, 0, 1, 0, 1, 1, 1, 1,
+  0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 1, 1, 0, 0, 0, 0, 1, 0, /**/ 1, 1, 0, 0, 1, 1, 0, 0,
+  0, 1, 0, 0, 0, 1, 0, 0, /**/ 0, 1, 0, 0, 0, 1, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 1, 0, 1,
+  1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0,
+  1, 1, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 1, 0, 1,
+  1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0, /**/ 1, 0, 0, 0, 1, 0, 0, 0,
+  1, 1, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 0, 1, 0, /**/ 0, 0, 1, 0, 0, 1, 0, 1,
+];
+
 
 let playerOnex = 405;
 let playerTwoX = 780;
@@ -32,7 +54,7 @@ let speed = 30;
 
 let size = 800;
 
-let scoreP1 = 1;
+let scoreP1 = 0;
 let hitStreakP1 = 0;
 let highestStreakP1 = 0;
 let totNoteP1 = 0;
@@ -78,18 +100,16 @@ function preload(){
 function setup() {
   song = loadSound('assets/dmvdisco.wav');
 
+  lightSensor = connectSensor( SENSOR_POTENTIOMETER, 'A0', 0, 1000 );
 
   createCanvas(screenWidth, screenHeight);
   
-  // playerOneButton = connectSensor( SENSOR_BUTTON, 3);
-  // playerTwoButton = connectSensor( SENSOR_BUTTON, 5);
-  // lampButton = connectSensor( SENSOR_BUTTON, 8);
+  playerOneButton = connectSensor( SENSOR_BUTTON, 10);
+  playerTwoButton = connectSensor( SENSOR_BUTTON, 8);
 
-  // playerOneButton.pressed(checkPointValueP1);
-  // playerTwoButton.pressed(checkPointValueP2);
-  // lampButton.pressed(lampButtonPressed);
+  playerOneButton.released(checkPointValueP1);
+  playerTwoButton.pressed(checkPointValueP2);
 }
-
 
 function draw() {
   counter++;
@@ -151,6 +171,10 @@ function mainGame(){
       noteCount += 1;
     }
     chartIndex++;
+  }
+  if(chartIndex == 384)
+  {
+    showing = 2;
   }
 
   // if ((counter % 30) == 0) {
@@ -217,7 +241,7 @@ function mainGame(){
   //clear the notes shortly after the pass the hitbox and prevent array from getting to big and take away points
   for (let i = 0; i < notesP1.length; i++){
     if (notesP1[i].y > screenHeight - 30){
-        scoreP1 -= 200;
+        scoreP1 -= 150;
         checkHitStreakP1();
         hitStreakP1 = 0;
         notesP1.splice(i, 1); //remove element from the array
@@ -228,21 +252,20 @@ function mainGame(){
       //clear for P2
   for (let i = 0; i < notesP2.length; i++) {
     if (notesP2[i].y > screenHeight - 30) {
-        scoreP2 -= 200;
+        scoreP2 -= 150;
         checkHitStreakP2();
         hitStreakP2 = 0;
         notesP2.splice(i, 1); //remove element from the array
         totNoteP2++;
     }
   }
-
   lampAdvantage();
 }
 
 function lampAdvantage(){
   //Lamp advantage
   fill(0, 0, 0);
-  if(playerOneAdvantage)
+  if(lightSensor.value() > 50)
   {
     rect(playerTwoX, -10, 150, playerTwoHiddenY, 10);
     playerTwoHiddenY += 1;
@@ -447,13 +470,13 @@ function checkPointValueP2()
 
 //checks which controller is presses
 function keyTyped() {
-  if (key === "a" && showing == 2) {
+  if (key == "a" && showing == 1) {
     checkPointValueP1();
   }
-  if (key == "l"  && showing == 2) {
+  if (key == "l"  && showing == 1) {
     checkPointValueP2();
   }
-  if (key == "g"  && showing == 2) {
+  if (key == "g"  && showing == 1) {
     //Add in lamp feature here.
   }
 }
@@ -547,6 +570,7 @@ function lampButtonPressed(){
 
 function endGame(){
 
+  song.stop();
   displayEndScored();
   stroke(0);
   strokeWeight(2);
